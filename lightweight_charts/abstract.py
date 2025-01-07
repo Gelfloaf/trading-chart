@@ -3,7 +3,7 @@ import json
 import os
 from base64 import b64decode
 from datetime import datetime
-from typing import Callable, Union, Literal, List, Optional
+from typing import Callable, Union, Literal, List, Optional, Dict
 import pandas as pd
 
 from .table import Table
@@ -755,7 +755,14 @@ class AbstractChart(Candlestick, Pane):
             to: {pd.to_datetime(end_time).timestamp()}
         }})
         ''')
-
+    
+    def get_visible_range(self) -> Dict[str, datetime]:
+        _visible_range = self.win.run_script_and_get(f'{self.id}.chart.timeScale().getVisibleRange()')
+        return {
+            "from": datetime.fromtimestamp(_visible_range["from"]),
+            "to":   datetime.fromtimestamp(_visible_range["to"]),
+        }
+        
     def resize(self, width: Optional[float] = None, height: Optional[float] = None):
         """
         Resizes the chart within the window.
