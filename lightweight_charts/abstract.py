@@ -202,10 +202,9 @@ class SeriesCommon(Pane):
         if not pd.api.types.is_datetime64_any_dtype(df['time']):
             df['time'] = pd.to_datetime(df['time'])
 
-        unit = str(df['time'].dtype).split('[')[-1][:-1]  # ns, us, ms, s
-        divisor = {'ns': 10**9, 'us': 10**6, 'ms': 10**3, 's': 1}[unit]
+        df['time'] = pd.to_datetime(df['time']).dt.tz_localize(None).astype('datetime64[ns]')
 
-        df['time'] = df['time'].astype('int64') // divisor
+        df['time'] = df['time'].astype('int64') // 10**9
         return df
 
     def _series_datetime_format(self, series: pd.Series, exclude_lowercase=None):
