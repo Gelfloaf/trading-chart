@@ -198,9 +198,13 @@ class SeriesCommon(Pane):
         df = df.copy()
         df.columns = self._format_labels(df, df.columns, df.index, exclude_lowercase)
         self._set_interval(df)
+
         if not pd.api.types.is_datetime64_any_dtype(df['time']):
             df['time'] = pd.to_datetime(df['time'])
-        df['time'] = df['time'].astype('int64') // 10 ** 9
+
+        df['time'] = pd.to_datetime(df['time']).dt.tz_localize(None).astype('datetime64[ns]')
+
+        df['time'] = df['time'].astype('int64') // 10**9
         return df
 
     def _series_datetime_format(self, series: pd.Series, exclude_lowercase=None):
