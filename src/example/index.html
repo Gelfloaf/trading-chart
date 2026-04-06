@@ -1,27 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Template Drawing Primitive Plugin Example</title>
-		<link rel="stylesheet" href="../general/styles.css">
-		
-		<style>
-			
-			#container {
-				/*margin-inline: auto;
-				max-width: 800px;
-				height: 400px;
-				background-color: rgba(240, 243, 250, 1);
-				border-radius: 5px;
-				overflow: hidden;*/
-			}
-			
-		</style>
-	</head>
-	<body>
-		<div id="container"></div>
-		<script type="module" src="./example.ts"></script>
-		<script type="module" src="../general/handler.ts"></script>
-	</body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Eyeing Genius Guru (EGG) - Professional Real-Time Trading Chart Platform by Nonce Firewall" />
+  <meta name="theme-color" content="#0c0d0f" />
+  <title>EGG - Eyeing Genius Guru | Nonce Firewall</title>
+  <link rel="stylesheet" href="../app/styles.css">
+  <style>
+    /* Critical CSS for initial load */
+    #app-root {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    .initial-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #0c0d0f;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      z-index: 9999;
+    }
+    
+    .loader-logo {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+    }
+    
+    .loader-text {
+      color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      font-size: 14px;
+    }
+    
+    .loader-brand {
+      color: #818cf8;
+      font-size: 11px;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+    }
+    
+    .loader-spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid #374151;
+      border-top-color: #818cf8;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Initial loader shown while JS loads -->
+  <div class="initial-loader" id="initial-loader">
+    <div class="loader-logo">EGG</div>
+    <div class="loader-text">Eyeing Genius Guru</div>
+    <div class="loader-spinner"></div>
+    <div class="loader-brand">A Product of Nonce Firewall</div>
+  </div>
+  
+  <div id="app-root"></div>
+  
+  <script type="module">
+    import { TradingApp } from '../app/trading-app.ts';
+    
+    // Hide loader once app is initialized
+    document.addEventListener('DOMContentLoaded', () => {
+      // Small delay to ensure smooth transition
+      setTimeout(() => {
+        const loader = document.getElementById('initial-loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          loader.style.transition = 'opacity 0.3s ease';
+          setTimeout(() => loader.remove(), 300);
+        }
+      }, 500);
+    });
+  </script>
+</body>
 </html>
