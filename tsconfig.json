@@ -3,7 +3,7 @@
 		"target": "ESNext",
 		"useDefineForClassFields": true,
 		"module": "ESNext",
-		"lib": ["ESNext", "DOM"],
+		"lib": ["ESNext", "DOM", "DOM.Iterable"],
 		"moduleResolution": "Node",
 		"strict": true,
 		"resolveJsonModule": true,
@@ -16,7 +16,17 @@
 		"declaration": true,
 		"declarationDir": "typings",
 		"emitDeclarationOnly": true,
-		// "outDir": "./dist"
+		"jsx": "preserve",
+		"incremental": true,
+		"plugins": [
+			{
+				"name": "next"
+			}
+		],
+		"paths": {
+			"@/*": ["./app/*"]
+		}
 	},
-	"include": ["src"]
+	"include": ["src", "app", "next-env.d.ts"],
+	"exclude": ["node_modules"]
 }

@@ -1,21 +1,35 @@
 {
-  "name": "lwc-plugin-trend-line",
+  "name": "eyeing-genius-guru",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --config src/vite.config.js",
-    "build": "./build.sh"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "lib:dev": "vite --config src/vite.config.js",
+    "lib:build": "./build.sh"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "next": "^15.0.0",
+    "lightweight-charts": "^4.1.0-rc2",
+    "dts-bundle-generator": "^8.0.1",
+    "fancy-canvas": "^2.1.0",
+    "tslib": "^2.6.2"
   },
   "devDependencies": {
+    "typescript": "^5.4.3",
+    "tailwindcss": "^3.4.0",
+    "postcss": "^8.4.0",
+    "autoprefixer": "^10.4.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
     "rollup": "^4.13.0",
-    "typescript": "^5.4.3",
     "vite": "^4.3.1"
-  },
-  "dependencies": {
-    "dts-bundle-generator": "^8.0.1",
-    "fancy-canvas": "^2.1.0",
-    "lightweight-charts": "^4.1.0-rc2",
-    "tslib": "^2.6.2"
   }
 }
