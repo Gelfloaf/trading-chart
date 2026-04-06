@@ -8,6 +8,8 @@ interface TopBarProps {
   isFullScreen: boolean
   onGridChange: (rows: number, cols: number) => void
   onToggleSidePanel: () => void
+  onToggleProMode?: () => void
+  isProMode?: boolean
 }
 
 export function TopBar({
@@ -15,6 +17,8 @@ export function TopBar({
   isFullScreen,
   onGridChange,
   onToggleSidePanel,
+  onToggleProMode,
+  isProMode = false,
 }: TopBarProps) {
   const [activeSymbol, setActiveSymbol] = useState('BTC/USD')
   const [showSymbolSearch, setShowSymbolSearch] = useState(false)
@@ -102,6 +106,17 @@ export function TopBar({
 
       {/* Controls */}
       <div className="flex items-center gap-2">
+        <button
+          className={`px-2 py-1.5 text-xs rounded transition-colors ${
+            isProMode
+              ? 'bg-[var(--color-primary)] text-white'
+              : 'hover:bg-[var(--color-surface-alt)]'
+          }`}
+          onClick={onToggleProMode}
+          title="Toggle Pro Mode"
+        >
+          Pro
+        </button>
         <button
           className="p-1.5 rounded hover:bg-[var(--color-surface-alt)] transition-colors"
           onClick={onToggleSidePanel}

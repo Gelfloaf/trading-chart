@@ -1,6 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
+import { Watchlist } from './watchlist'
+import { PerformanceSettings } from '@/components/settings/performance-settings'
 
 interface SidePanelProps {
   selectedChartId: string | null
@@ -8,7 +10,7 @@ interface SidePanelProps {
 }
 
 export function SidePanel({ selectedChartId, onConfigChange }: SidePanelProps) {
-  const [activeTab, setActiveTab] = useState<'indicators' | 'drawing' | 'settings'>('indicators')
+  const [activeTab, setActiveTab] = useState<'watchlist' | 'indicators' | 'drawing' | 'settings' | 'performance'>('watchlist')
   const [selectedIndicators, setSelectedIndicators] = useState<string[]>([])
 
   const indicators = [
@@ -41,15 +43,17 @@ export function SidePanel({ selectedChartId, onConfigChange }: SidePanelProps) {
   return (
     <div className="w-80 bg-[var(--color-surface)] border-l border-[var(--color-border)] flex flex-col overflow-hidden">
       {/* Tab Header */}
-      <div className="h-12 bg-[var(--color-surface-alt)] border-b border-[var(--color-border)] flex items-center">
+      <div className="h-12 bg-[var(--color-surface-alt)] border-b border-[var(--color-border)] flex items-center overflow-x-auto">
         {[
-          { id: 'indicators', label: '📊 Indicators' },
-          { id: 'drawing', label: '✏️ Drawing' },
-          { id: 'settings', label: '⚙️ Settings' },
+          { id: 'watchlist', label: '📈 Watch' },
+          { id: 'indicators', label: '📊 Ind' },
+          { id: 'drawing', label: '✏️ Draw' },
+          { id: 'settings', label: '⚙️ Set' },
+          { id: 'performance', label: '⚡ Perf' },
         ].map(tab => (
           <button
             key={tab.id}
-            className={`flex-1 py-2 px-3 text-xs font-medium transition-colors border-b-2 ${
+            className={`py-2 px-2 text-xs font-medium transition-colors border-b-2 whitespace-nowrap ${
               activeTab === tab.id
                 ? 'border-[var(--color-primary)] text-[var(--color-primary)]'
                 : 'border-transparent text-[var(--color-text-secondary)] hover:text-[var(--color-text)]'
@@ -63,6 +67,15 @@ export function SidePanel({ selectedChartId, onConfigChange }: SidePanelProps) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
+        {/* Watchlist Tab */}
+        {activeTab === 'watchlist' && (
+          <div className="p-3">
+            <Watchlist onSelectSymbol={(symbol) => {
+              onConfigChange({ type: 'symbol-change', symbol })
+            }} />
+          </div>
+        )}
+
         {/* Indicators Tab */}
         {activeTab === 'indicators' && (
           <div className="p-3 space-y-2">
@@ -107,6 +120,15 @@ export function SidePanel({ selectedChartId, onConfigChange }: SidePanelProps) {
                 <span>{tool.name}</span>
               </button>
             ))}
+          </div>
+        )}
+
+        {/* Performance Tab */}
+        {activeTab === 'performance' && (
+          <div className="p-3">
+            <PerformanceSettings onConfigChange={(config) => {
+              onConfigChange({ type: 'performance', ...config })
+            }} isOpen={true} />
           </div>
         )}
 
