@@ -82,8 +82,10 @@ export function applyTheme(mode: ThemeMode) {
   const theme = themes[mode]
   const root = document.documentElement
   
+  // Convert camelCase to kebab-case for CSS variables
   Object.entries(theme.colors).forEach(([key, value]) => {
-    root.style.setProperty(`--color-${key}`, value)
+    const cssVarName = key.replace(/([A-Z])/g, '-$1').toLowerCase()
+    root.style.setProperty(`--color-${cssVarName}`, value)
   })
   
   root.setAttribute('data-theme', mode)
