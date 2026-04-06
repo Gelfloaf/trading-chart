@@ -3,13 +3,39 @@
 import React, { useMemo } from 'react'
 import { useRealTimeData } from '@/hooks/useRealTimeData'
 import { useDevicePerformance } from '@/hooks/useDevicePerformance'
-import { reduceDataPoints } from '@/lib/performance/data-reducer'
 
 interface ChartViewerProps {
   id: string
   isSelected: boolean
   symbol?: string
   timeframe?: number
+}
+
+// Generate mock OHLCV data for testing
+function generateMockData() {
+  const data = []
+  const now = Date.now()
+  const oneMinute = 60000
+
+  for (let i = 100; i > 0; i--) {
+    const time = Math.floor((now - i * oneMinute) / 1000)
+    const basePrice = 40000 + Math.sin(i * 0.1) * 5000
+    const open = basePrice + (Math.random() - 0.5) * 100
+    const close = basePrice + (Math.random() - 0.5) * 100
+    const high = Math.max(open, close) + Math.random() * 50
+    const low = Math.min(open, close) - Math.random() * 50
+
+    data.push({
+      time,
+      open,
+      high,
+      low,
+      close,
+      volume: Math.random() * 1000000,
+    })
+  }
+
+  return data
 }
 
 export function ChartViewer({ 
@@ -21,22 +47,29 @@ export function ChartViewer({
   const deviceCapability = useDevicePerformance()
   const { data: rawData, isConnected, lastUpdate } = useRealTimeData(symbol, timeframe)
 
-  // Optimize data based on device tier
-  const optimizedData = useMemo(() => {
-    if (rawData.length === 0) return rawData
-    
-    const maxPoints = {
-      low: 200,
-      medium: 500,
-      high: 1000,
-    }[deviceCapability.tier]
+  // Fallback to mock data if rawData is empty for testing
+  const dataToDisplay = rawData.length > 0 ? rawData : generateMockData()
 
-    return reduceDataPoints(rawData, maxPoints, deviceCapability.tier)
-  }, [rawData, deviceCapability.tier])
+  // Show last 20 candles in chart (use raw data directly for now)
+  const displayData = useMemo(() => {
+    if (dataToDisplay.length === 0) return []
+    return dataToDisplay.slice(-20)
+  }, [dataToDisplay])
 
-  // Show last 20 candles in chart
-  const displayData = optimizedData.slice(-20)
-  const isLoading = !isConnected && optimizedData.length === 0
+  const isLoading = !isConnected && rawData.length === 0
+
+  // Debug log
+  React.useEffect(() => {
+    console.log('[v0] ChartViewer render:', {
+      id,
+      rawDataLength: rawData.length,
+      displayDataLength: displayData.length,
+      isConnected,
+      isLoading,
+      deviceTier: deviceCapability.tier,
+      usingMockData: rawData.length === 0,
+    })
+  }, [id, rawData.length, displayData.length, isConnected, isLoading, deviceCapability.tier])
 
   return (
     <div
@@ -66,7 +99,7 @@ export function ChartViewer({
         ) : (
           <div className="w-full h-full flex flex-col p-4">
             {/* Candlestick Chart Visualization */}
-            <div className="flex-1 flex items-end justify-around gap-0.5 bg-[var(--color-surface-alt)] rounded p-2 mb-2">
+            <div className="flex-1 flex items-end justify-around gap-0.5 bg-[var(--color-surface-alt)] rounded p-2 mb-2 min-h-32">
               {displayData.length > 0 ? (
                 displayData.map((candle: any, idx: number) => {
                   const minPrice = Math.min(...displayData.map((c: any) => c.low))
@@ -115,10 +148,10 @@ export function ChartViewer({
             {/* Chart Stats */}
             <div className="text-xs text-[var(--color-text-secondary)] flex justify-between">
               <span>
-                {displayData.length > 0 && `Last: ${displayData[displayData.length - 1].close.toFixed(2)}`}
+                {displayData.length > 0 && `Last: $${displayData[displayData.length - 1].close.toFixed(2)}`}
               </span>
               <span>
-                Points: {optimizedData.length} | Updated: {new Date(lastUpdate).toLocaleTimeString()}
+                Points: {dataToDisplay.length} | {rawData.length === 0 ? 'Demo' : 'Live'} | {new Date(lastUpdate || Date.now()).toLocaleTimeString()}
               </span>
             </div>
           </div>
